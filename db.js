@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3');
 
 let users_db, medications_db;
 
-function initDbs(callback) {
+function initDbs() {
     users_db = new sqlite3.Database(process.env.DB_FILE, sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
             console.error(err.message);
@@ -18,7 +18,6 @@ function initDbs(callback) {
             console.log('Connected to the medications database.');
         }
     });
-    return callback();
 }
 
 function getUsersDb() {

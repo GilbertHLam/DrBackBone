@@ -39,7 +39,6 @@ app.post('/editMedication', (request, response) => {
     editMedication(request, response);
 });
 
-initDbs(function () {
-    app.listen(port);
-    console.log('Listening on ' + port);
-});
+initDbs();
+app.listen(port);
+console.log('Listening on ' + port);
