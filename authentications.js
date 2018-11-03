@@ -27,6 +27,7 @@ function login(request, response) {
             else
                 returnObj.error = true;
             response.json(returnObj);
+            response.end();
         });
     });
 }
@@ -54,10 +55,12 @@ function signup(request, response) {
                 sqlInsert.finalize();
                 returnObj.error = false;
                 response.json(returnObj);
+                response.end();
             } else {
                 returnObj.error = true;
                 returnObj.passwordError = goodPass;
                 response.json(returnObj);
+                response.end();
             }
         }
     });
