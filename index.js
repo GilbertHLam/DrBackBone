@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
 const app = express();
+const port = process.env.PORT || 4000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
@@ -96,6 +97,6 @@ function checkPassword(password) {
     }
     return ("ok");
 }
-app.listen(4000);
+app.listen(port);
 
-console.log('Listening on 4000');
+console.log('Listening on ' + port);
