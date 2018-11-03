@@ -21,7 +21,7 @@ app.post('/login', (request, response) => {
         if (err)
             throw err;
         rows.forEach((element) => {
-            if (element[process.env.LOGIN_TABLE] == (sha512(tempPass, element.hash).passwordHash))
+            if (element[process.env.LOGIN_TABLE] === (sha512(tempPass, element.hash).passwordHash))
                 returnObj.error = false;
             else
                 returnObj.error = true;
@@ -38,7 +38,7 @@ app.post('/signup', (request, response) => {
     usersDB.all(sqlQuery, [], (err, rows) => {
         if (err)
             throw err;
-        if (rows.length != 0) {
+        if (rows.length !== 0) {
             returnObj.error = true;
             returnObj.passwordError = "User already exists";
             response.json(returnObj);
@@ -82,13 +82,14 @@ function sha512(password, salt) {
 function checkPassword(password) {
     if (password.length < 6) {
         return ("Password too short!");
-    } else if (password.search(/\d/) == -1) {
+    } else if (password.search(/\d/) === -1) {
         return ("Password doesn't contain numbers!");
-    } else if (password.search(/[a-zA-Z]/) == -1) {
+    } else if (password.search(/[a-zA-Z]/) === -1) {
         return ("Password doesn't contain any letters!");
     }
     return ("ok");
 }
+
 app.listen(4000);
 
 console.log('Listening on 4000');
