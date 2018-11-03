@@ -1,26 +1,23 @@
-const sqlite3 = require('sqlite3');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
 const app = express();
+const {getUsersDb, initDbs} = require('./db');
+
 const port = process.env.PORT || 4000;
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
 
-let usersDB = new sqlite3.Database(process.env.DB_FILE, sqlite3.OPEN_READWRITE, (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-    console.log('Connected to the users database.');
-});
 
 app.post('/login', (request, response) => {
+    var usersDB = getUsersDb();
     var returnObj = {};
     var tempUser = request.body.username.toUpperCase();
     var tempPass = request.body.password;
@@ -39,6 +36,7 @@ app.post('/login', (request, response) => {
 });
 
 app.post('/signup', (request, response) => {
+    var usersDB = getUsersDb();
     var returnObj = {};
     var tempUser = request.body.username.toUpperCase();
     var tempPass = request.body.password;
@@ -73,12 +71,14 @@ app.post('/signup', (request, response) => {
 function genRandomString(length) {
     return crypto.randomBytes(Math.ceil(length / 2))
         .toString('hex') /** convert to hexadecimal format */
-        .slice(0, length); /** return required number of characters */
+        .slice(0, length);
+    /** return required number of characters */
 };
 
 
 function sha512(password, salt) {
-    var hash = crypto.createHmac('sha512', salt); /** Hashing algorithm sha512 */
+    var hash = crypto.createHmac('sha512', salt);
+    /** Hashing algorithm sha512 */
     hash.update(password);
     var value = hash.digest('hex');
     return {
@@ -97,6 +97,8 @@ function checkPassword(password) {
     }
     return ("ok");
 }
-app.listen(port);
 
-console.log('Listening on ' + port);
+initDbs(function () {
+    app.listen(port);
+    console.log('Listening on ' + port);
+});
