@@ -8,6 +8,7 @@ const { initDbs } = require('./db');
 const { login, signup } = require('./authentications')
 const { getAllMedications, editMedication, addMedication, getMedicationInfo } = require('./medications')
 const{ getAllMedicalConditions, editMedicalCondition, addMedicalCondition, getMedicalConditionInfo} = require('./medicalConditions');
+const{ getAllOperations, editOperation, addOperation, getOperationInfo} = require('./operations');
 const port = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -56,6 +57,23 @@ app.post('/editMedicalCondition', (request, response) => {
 
 app.post('/getMedicalConditionInfo', (request, response) => {
     getMedicalConditionInfo(request, response);
+});
+
+//Operations routes
+app.post('/getAllOperations', (request, response) => {
+    getAllOperations(request, response);
+});
+
+app.post('/addOperation', (request, response) => {
+    addOperation(request, response);
+});
+
+app.post('/editOperation', (request, response) => {
+    editOperation(request, response);
+});
+
+app.post('/getOperationInfo', (request, response) => {
+    getOperationInfo(request, response);
 });
 
 initDbs();

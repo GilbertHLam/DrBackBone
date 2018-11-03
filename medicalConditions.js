@@ -7,7 +7,7 @@ const {
 
 function getAllMedicalConditions(request, response) {
     let returnObj = {};
-    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: null;
+    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: "";
 
     let userID = request.body.userId;
     let listOfMedicalConditions = [];
@@ -15,7 +15,7 @@ function getAllMedicalConditions(request, response) {
     const sql = `SELECT name, date, uniqueId FROM medical_conditions WHERE userId LIKE "%${userID}%" ${dateFilter} ORDER BY date;`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
-            listOfMedications.push({
+            listOfMedicalConditions.push({
                 name: element.name,
                 date: element.date,
                 uniqueId: element.uniqueId
@@ -31,14 +31,14 @@ function editMedicalCondition(request, response) {
     var returnObj = {};
     let database = getMedicalConditionsDb();
     let {
-        title,
+        name,
         notes,
         userId,
         date,
         uniqueId
     } = request.body;
 
-    var sqlUpdate = `UPDATE medication_conditions SET title = ${title}, notes = ${notes}, userId = ${userId}, date = ${date} WHERE uniqueId LIKE "%${uniqueId}%";`;
+    var sqlUpdate = `UPDATE medication_conditions SET name = ${name}, notes = ${notes}, userId = ${userId}, date = ${date} WHERE uniqueId LIKE "%${uniqueId}%";`;
     database.run(sqlUpdate, [], function (err) {
         if (err) {
             returnObj.error = true;
@@ -55,12 +55,12 @@ function getMedicalConditionInfo(request, response) {
     let returnObj = {};
 
     let uniqueId = request.body.uniqueId;
-    let listOfMedications = [];
+    let listOfMedicalConditions = [];
     let database = getMedicalConditionsDb();
     const sql = `SELECT * FROM medical_conditions WHERE uniqueId LIKE "%${uniqueId}%"`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
-            listOfMedications.push({
+            listOflistOfMedicalConditions.push({
                 name: element.name,
                 notes: element.notes,
                 userId: element.userId,
@@ -68,7 +68,7 @@ function getMedicalConditionInfo(request, response) {
                 uniqueId: element.uniqueId
             });
         });
-        returnObj.results = listOfMedications;
+        returnObj.results = listOfMedicalConditions;
         response.json(returnObj);
         response.end();
     });
