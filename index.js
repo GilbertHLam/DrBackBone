@@ -1,7 +1,7 @@
-import express from 'express';
-import sqlite3 from 'sqlite3';
-import bodyParser from 'body-parser';
-import http from 'http';
+const sqlite3 = require('sqlite3');
+require('dotenv').config();
+const bodyParser = require('body-parser');
+const express = require('express');
 
 const app = express();
 
