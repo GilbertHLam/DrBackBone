@@ -1,0 +1,22 @@
+{
+  "name": "drbackbone",
+  "version": "1.0.0",
+  "description": "Backend for DrBones",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GilbertHLam/DrBackBone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GilbertHLam/DrBackBone/issues"
+  },
+  "homepage": "https://github.com/GilbertHLam/DrBackBone#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
