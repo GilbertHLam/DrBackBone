@@ -2,18 +2,17 @@ const sqlite3 = require('sqlite3');
 
 const {genRandomString} = require('./utils');
 const {
-    getMedicationsDb
+    getMedicalConditionsDb
 } = require('./db');
 
-function getAllMedications(request, response) {
+function getAllMedicalConditions(request, response) {
     let returnObj = {};
     let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: null;
-    let medicalConditionIdFilter = request.query.medicalConditionId ? `AND medicalConditionId LIKE "%${request.query.medicalConditionId}%"`: null;
 
     let userID = request.body.userId;
-    let listOfMedications = [];
-    let database = getMedicationsDb();
-    const sql = `SELECT name, date, uniqueId FROM medications WHERE userId LIKE "%${userID}%" ${dateFilter} ${medicalConditionIdFilter} ORDER BY date;`;
+    let listOfMedicalConditions = [];
+    let database = getMedicalConditionsDb();
+    const sql = `SELECT name, date, uniqueId FROM medical_conditions WHERE userId LIKE "%${userID}%" ${dateFilter} ORDER BY date;`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
             listOfMedications.push({
@@ -22,28 +21,24 @@ function getAllMedications(request, response) {
                 uniqueId: element.uniqueId
             });
         });
-        returnObj.results = listOfMedications;
+        returnObj.results = listOfMedicalConditions;
         response.json(returnObj);
         response.end();
     });
 }
 
-function editMedication(request, response) {
+function editMedicalCondition(request, response) {
     var returnObj = {};
-    let database = getMedicationsDb();
+    let database = getMedicalConditionsDb();
     let {
-        medicalConditionId,
         title,
-        dose,
-        frequency,
-        timePeriod,
         notes,
         userId,
         date,
         uniqueId
     } = request.body;
 
-    var sqlUpdate = `UPDATE medication SET medicalConditionId = ${medicalConditionId}, title = ${title}, dose = ${dose}, frequency = ${frequency}, timePeriod = ${timePeriod}, notes = ${notes}, userId = ${userId}, date = ${date} WHERE uniqueId LIKE "%${uniqueId}%";`;
+    var sqlUpdate = `UPDATE medication_conditions SET title = ${title}, notes = ${notes}, userId = ${userId}, date = ${date} WHERE uniqueId LIKE "%${uniqueId}%";`;
     database.run(sqlUpdate, [], function (err) {
         if (err) {
             returnObj.error = true;
@@ -56,21 +51,17 @@ function editMedication(request, response) {
     });
 }
 
-function getMedicationInfo(request, response) {
+function getMedicalConditionInfo(request, response) {
     let returnObj = {};
 
     let uniqueId = request.body.uniqueId;
     let listOfMedications = [];
-    let database = getMedicationsDb();
-    const sql = `SELECT * FROM medications WHERE uniqueId LIKE "%${uniqueId}%"`;
+    let database = getMedicalConditionsDb();
+    const sql = `SELECT * FROM medical_conditions WHERE uniqueId LIKE "%${uniqueId}%"`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
             listOfMedications.push({
-                medicalConditionId: element.medicalConditionId,
                 name: element.name,
-                dose: element.dose,
-                frequency: element.frequency,
-                timePeriod: element.timePeriod,
                 notes: element.notes,
                 userId: element.userId,
                 date: element.date,
@@ -83,24 +74,20 @@ function getMedicationInfo(request, response) {
     });
 }
 
-function addMedication(request, response) {
+function addMedicalCondition(request, response) {
     let returnObj = {};
-    let database = getMedicationsDb();
+    let database = getMedicalConditionsDb();
     const uniqueId = genRandomString(16);
     let {
-        medicalConditionId,
         name,
-        dose,
-        frequency,
-        timePeriod,
         notes,
         userId,
-        date,
+        date
     } = request.body;
 
     try {
-        var sqlInsert = database.prepare('INSERT INTO medications (medicalConditionId, name, dose, frequency, timePeriod, notes, userId, date, uniqueId) VALUES (?,?,?,?,?,?,?,?,?);');
-        sqlInsert.run(medicalConditionId, name, dose, frequency, timePeriod, notes, userId, date, uniqueId);
+        var sqlInsert = database.prepare('INSERT INTO medical_conditions (name, notes, userId, date, uniqueId) VALUES (?,?,?,?,?);');
+        sqlInsert.run(name, notes, userId, date, uniqueId);
         sqlInsert.finalize();
         returnObj.error = false;
         response.json(returnObj);
@@ -114,8 +101,8 @@ function addMedication(request, response) {
 }
 
 module.exports = {
-    getAllMedications,
-    editMedication,
-    addMedication,
-    getMedicationInfo
+    getAllMedicalConditions,
+    editMedicalCondition,
+    addMedicalCondition,
+    getMedicalConditionInfo
 };

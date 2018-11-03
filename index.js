@@ -6,7 +6,8 @@ const app = express();
 
 const { initDbs } = require('./db');
 const { login, signup } = require('./authentications')
-const { getAllMedications, editMedication, addMedication } = require('./medications')
+const { getAllMedications, editMedication, addMedication, getMedicationInfo } = require('./medications')
+const{ getAllMedicalConditions, editMedicalCondition, addMedicalCondition, getMedicalConditionInfo} = require('./medicalConditions');
 const port = process.env.PORT || 4000;
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -36,6 +37,28 @@ app.post('/editMedication', (request, response) => {
     editMedication(request, response);
 });
 
+app.post('/getMedicationInfo', (request, response) => {
+    getMedicationInfo(request, response);
+});
+
+//Medical Condition routes
+app.post('/getAllMedicalConditions', (request, response) => {
+    getAllMedicalConditions(request, response);
+});
+
+app.post('/addMedicalCondition', (request, response) => {
+    addMedicalCondition(request, response);
+});
+
+app.post('/editMedicalCondition', (request, response) => {
+    editMedicalCondition(request, response);
+});
+
+app.post('/getMedicalConditionInfo', (request, response) => {
+    getMedicalConditionInfo(request, response);
+});
+
 initDbs();
+
 app.listen(port);
 console.log('Listening on ' + port);
