@@ -7,11 +7,13 @@ const {
 
 function getAllMedications(request, response) {
     let returnObj = {};
+    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: null;
+    let medicalConditionIdFilter = request.query.medicalConditionId ? `AND medicalConditionId LIKE "%${request.query.medicalConditionId}%"`: null;
 
     let userID = request.body.userId;
     let listOfMedications = [];
     let database = getMedicationsDb();
-    const sql = `SELECT name, date, uniqueId FROM medications WHERE userId LIKE "%${userID}%" ORDER BY date;`;
+    const sql = `SELECT name, date, uniqueId FROM medications WHERE userId LIKE "%${userID}%" ${dateFilter} ${medicalConditionIdFilter} ORDER BY date;`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
             listOfMedications.push({
