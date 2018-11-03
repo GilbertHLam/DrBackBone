@@ -17,15 +17,18 @@ function login(request, response) {
     var returnObj = {};
     var tempUser = request.body.username.toUpperCase();
     var tempPass = request.body.password;
-    var sqlQuery = 'SELECT ' + process.env.LOGIN_TABLE + ', hash FROM ' + process.env.LOGIN_DB + ' WHERE ' + process.env.LOGIN_KEY + ' LIKE "%' + tempUser + '%";';
+    var sqlQuery = 'SELECT ' + process.env.LOGIN_TABLE + ', hash, userId FROM ' + process.env.LOGIN_DB + ' WHERE ' + process.env.LOGIN_KEY + ' LIKE "%' + tempUser + '%";';
     usersDB.all(sqlQuery, [], (err, rows) => {
         if (err)
             throw err;
         rows.forEach((element) => {
-            if (element[process.env.LOGIN_TABLE] === (sha512(tempPass, element.hash).passwordHash))
+            if (element[process.env.LOGIN_TABLE] === (sha512(tempPass, element.hash).passwordHash)) {
                 returnObj.error = false;
-            else
+                returnObj.userId = element.userId;
+            }
+            else {
                 returnObj.error = true;
+            }
             response.json(returnObj);
             response.end();
         });
@@ -45,13 +48,18 @@ function signup(request, response) {
             returnObj.error = true;
             returnObj.passwordError = "User already exists";
             response.json(returnObj);
+        } else if (tempUser === "" || tempUser === null) {
+            returnObj.error = true;
+            returnObj.passwordError = "Username is invalid.";
+            response.json(returnObj);
         } else {
-            var goodPass = checkPassword(tempPass);
-            var newSalt = genRandomString(16);
-            var newPass = sha512(tempPass, newSalt);
+            const goodPass = checkPassword(tempPass);
+            const newSalt = genRandomString(16);
+            const userId = genRandomString(16);
+            const newPass = sha512(tempPass, newSalt);
             if (goodPass === ('ok')) {
-                var sqlInsert = usersDB.prepare('INSERT INTO ' + process.env.LOGIN_DB + ' (' + process.env.LOGIN_KEY + ', ' + process.env.LOGIN_TABLE + ', hash) VALUES (?,?,?);');
-                sqlInsert.run(tempUser, newPass.passwordHash, newSalt);
+                var sqlInsert = usersDB.prepare('INSERT INTO ' + process.env.LOGIN_DB + ' (' + process.env.LOGIN_KEY + ', ' + process.env.LOGIN_TABLE + ', hash, userId) VALUES (?,?,?,?);');
+                sqlInsert.run(tempUser, newPass.passwordHash, newSalt, userId);
                 sqlInsert.finalize();
                 returnObj.error = false;
                 response.json(returnObj);
