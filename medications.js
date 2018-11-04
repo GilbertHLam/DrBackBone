@@ -7,24 +7,26 @@ const {
 
 function getAllMedications(request, response) {
     let returnObj = {};
-    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: null;
-    let medicalConditionIdFilter = request.query.medicalConditionId ? `AND medicalConditionId LIKE "%${request.query.medicalConditionId}%"`: null;
+    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"` : null;
+    let medicalConditionIdFilter = request.query.medicalConditionId ? `AND medicalConditionId LIKE "%${request.query.medicalConditionId}%"` : null;
 
     let userID = request.body.userId;
     let listOfMedications = [];
     let database = getMedicationsDb();
     const sql = `SELECT name, date, uniqueId FROM medications WHERE userId LIKE "%${userID}%" ${dateFilter} ${medicalConditionIdFilter} ORDER BY date;`;
-    database.all(sql, [], (err, row) => {
-        row.forEach((element) => {
-            listOfMedications.push({
-                name: element.name,
-                date: element.date,
-                uniqueId: element.uniqueId
+    database.all(sql, [], (err, row = []) => {
+        if (row) {
+            row.forEach((element) => {
+                listOfMedications.push({
+                    name: element.name,
+                    date: element.date,
+                    uniqueId: element.uniqueId
+                });
             });
-        });
-        returnObj.results = listOfMedications;
-        response.json(returnObj);
-        response.end();
+            returnObj.results = listOfMedications;
+            response.json(returnObj);
+            response.end();
+        }
     });
 }
 
@@ -63,7 +65,7 @@ function getMedicationInfo(request, response) {
     let listOfMedications = [];
     let database = getMedicationsDb();
     const sql = `SELECT * FROM medications WHERE uniqueId LIKE "%${uniqueId}%"`;
-    database.all(sql, [], (err, row) => {
+    database.all(sql, [], (err, row = []) => {
         row.forEach((element) => {
             listOfMedications.push({
                 medicalConditionId: element.medicalConditionId,

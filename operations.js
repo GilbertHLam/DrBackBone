@@ -13,7 +13,7 @@ function getAllOperations(request, response) {
     let listOfOperations = [];
     let database = getOperationsDb();
     const sql = `SELECT name, date, uniqueId FROM operations WHERE userId LIKE "%${userID}%" ${dateFilter} ORDER BY date;`;
-    database.all(sql, [], (err, row) => {
+    database.all(sql, [], (err, row=[]) => {
         row.forEach((element) => {
             listOfOperations.push({
                 name: element.name,
@@ -59,7 +59,7 @@ function getOperationInfo(request, response) {
     let listOfOperationss = [];
     let database = getOperationsDb();
     const sql = `SELECT * FROM operations WHERE uniqueId LIKE "%${uniqueId}%"`;
-    database.all(sql, [], (err, row) => {
+    database.all(sql, [], (err, row = []) => {
         row.forEach((element) => {
             listOfOperations.push({
                 medicalConditionId: element.medicalConditionId,
