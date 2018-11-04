@@ -23,11 +23,7 @@ function login(request, response) {
             throw err;
         rows.forEach((element) => {
             if (element[process.env.LOGIN_TABLE] === (sha512(tempPass, element.hash).passwordHash)) {
-                returnObj.error = false;
                 returnObj.userId = element.userId;
-            }
-            else {
-                returnObj.error = true;
             }
         });
         response.json(returnObj);
