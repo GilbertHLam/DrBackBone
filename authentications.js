@@ -29,8 +29,8 @@ function login(request, response) {
             else {
                 returnObj.error = true;
             }
-            response.json(returnObj);
         });
+        response.json(returnObj);
     });
 }
 
