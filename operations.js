@@ -55,8 +55,8 @@ function getOperationInfo(request, response) {
     let uniqueId = request.body.uniqueId;
     let database = getOperationsDb();
     const sql = `SELECT * FROM operations WHERE uniqueId LIKE "%${uniqueId}%"`;
+    let listOfOperations = [];
     database.all(sql, [], (err, row = []) => {
-        let listOfOperationss = [];
         row.forEach((element) => {
             listOfOperations.push({
                 medicalConditionId: element.medicalConditionId,
