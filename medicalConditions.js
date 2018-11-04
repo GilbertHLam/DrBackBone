@@ -60,7 +60,7 @@ function getMedicalConditionInfo(request, response) {
     const sql = `SELECT * FROM medical_conditions WHERE uniqueId LIKE "%${uniqueId}%"`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
-            listOflistOfMedicalConditions.push({
+            listOfMedicalConditions.push({
                 name: element.name,
                 notes: element.notes,
                 userId: element.userId,
