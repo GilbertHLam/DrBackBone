@@ -61,6 +61,7 @@ function signup(request, response) {
                 sqlInsert.run(tempUser, newPass.passwordHash, newSalt, userId);
                 sqlInsert.finalize();
                 returnObj.error = false;
+                returnObj.userId = userId;
                 response.json(returnObj);
             } else {
                 returnObj.error = true;
