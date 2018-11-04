@@ -15,7 +15,7 @@ function getAllMedicalConditions(request, response) {
     const sql = `SELECT name, date, uniqueId FROM medical_conditions WHERE userId LIKE "%${userID}%" ${dateFilter} ORDER BY date;`;
     database.all(sql, [], (err, row) => {
         row.forEach((element) => {
-            listOfMedications.push({
+            listOfMedicalConditions.push({
                 name: element.name,
                 date: element.date,
                 uniqueId: element.uniqueId
