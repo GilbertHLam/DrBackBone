@@ -1,5 +1,3 @@
-const sqlite3 = require('sqlite3');
-
 const {genRandomString} = require('./utils');
 const {
     getOperationsDb
@@ -7,13 +5,12 @@ const {
 
 function getAllOperations(request, response) {
     let returnObj = {};
-    let dateFilter = request.query.date ? `AND date LIKE "%${request.query.date}%"`: null;
 
     let userID = request.body.userId;
     let listOfOperations = [];
     let database = getOperationsDb();
-    const sql = `SELECT name, date, uniqueId FROM operations WHERE userId LIKE "%${userID}%" ${dateFilter} ORDER BY date;`;
-    database.all(sql, [], (err, row=[]) => {
+    const sql = `SELECT name, date, uniqueId FROM operations WHERE userId LIKE "%${userID}%" ORDER BY date;`;
+    database.all(sql, [], (err, row = []) => {
         row.forEach((element) => {
             listOfOperations.push({
                 name: element.name,
@@ -56,10 +53,10 @@ function getOperationInfo(request, response) {
     let returnObj = {};
 
     let uniqueId = request.body.uniqueId;
-    let listOfOperationss = [];
     let database = getOperationsDb();
     const sql = `SELECT * FROM operations WHERE uniqueId LIKE "%${uniqueId}%"`;
     database.all(sql, [], (err, row = []) => {
+        let listOfOperationss = [];
         row.forEach((element) => {
             listOfOperations.push({
                 medicalConditionId: element.medicalConditionId,
@@ -90,7 +87,7 @@ function addOperation(request, response) {
 
     try {
         var sqlInsert = database.prepare('INSERT INTO operations (medicalConditionId, name, notes, userId, date, uniqueId) VALUES (?, ?,?,?,?,?);');
-        sqlInsert.run(name, notes, userId, date, uniqueId);
+        sqlInsert.run(medicalConditionId, name, notes, userId, date, uniqueId);
         sqlInsert.finalize();
         returnObj.error = false;
         response.json(returnObj);
