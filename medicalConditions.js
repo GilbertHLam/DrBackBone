@@ -89,6 +89,7 @@ function addMedicalCondition(request, response) {
         var sqlInsert = database.prepare('INSERT INTO medical_conditions (name, notes, userId, date, uniqueId) VALUES (?,?,?,?,?);');
         sqlInsert.run(name, notes, userId, date, uniqueId);
         sqlInsert.finalize();
+        returnObj.uniqueId = uniqueId
         returnObj.error = false;
         response.json(returnObj);
         response.end();
