@@ -21,6 +21,8 @@ app.use(function(req,res,next) {
     next();
 });
 
+app.use(express.static('public'))
+
 
 // Authentication routes
 app.post('/login', (request, response) => {
